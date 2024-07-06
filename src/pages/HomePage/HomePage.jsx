@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getTrendingMovies } from "../../movie-api";
-import { MovieList, MovieItem, MovieContainer, MovieTitle, MovieHeading} from "./HomePage.styled";
+import { MovieContainer, MovieHeading } from "./HomePage.styled";
+import MovieList from "../../components/MovieList/MovieList";
 
 const HomePage = () => {
 
@@ -26,13 +27,7 @@ const HomePage = () => {
     return (
         <MovieContainer>
             <MovieHeading>Trending today</MovieHeading>
-            <MovieList>
-                {trandingMovies.map(({id, title}) => (
-                    <MovieItem key={id}>
-                        <MovieTitle to={`movies/${id}`} key={id}>{title}</MovieTitle>
-                    </MovieItem>
-                ))} 
-            </MovieList>
+            <MovieList trandingMovies={trandingMovies} />
         </MovieContainer>
     );
 };
