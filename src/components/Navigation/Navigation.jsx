@@ -1,8 +1,6 @@
 import { Suspense } from "react";
-
 import { Outlet } from "react-router-dom";
 import { Header, NavList, NavItem, StyledNavLink } from "./Navigation.styled";
-
 
 const Navigation = () => {
     return (
