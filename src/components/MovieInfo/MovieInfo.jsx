@@ -3,10 +3,8 @@ import { MovieContainer, PosterImage, MovieDetails, NoImage, MovieTitle, InfoPar
 export const MovieDetailsComponent = ({ movieInfoDetails }) => {
     const { title, original_title, release_date, overview = 'There is no overview', vote_average, genres = [], poster_path, status,} = movieInfoDetails;
 
-
     const date = new Date(release_date).getFullYear();
     const userRate = Math.round(vote_average * 10);
-    // console.log(vote_average);
 
     return (
         <MovieContainer>

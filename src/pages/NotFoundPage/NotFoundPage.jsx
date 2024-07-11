@@ -4,7 +4,7 @@ import { NotFoundContainer, NotFoundTitle, NotFoundLink } from "./NotFoundPage.s
 const NotFoundPage = () => {
   return (
     <NotFoundContainer>
-      <NotFoundTitle>Oops! Not found!</NotFoundTitle>
+      <NotFoundTitle>Not found such page!</NotFoundTitle>
       <NotFoundLink to="/">
         <IoIosArrowBack />
         <p>Back to home page!</p>

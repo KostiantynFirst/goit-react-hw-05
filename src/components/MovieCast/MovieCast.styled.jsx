@@ -39,9 +39,10 @@ export const ActorInfo = styled.div`
 `;
 
 export const NoImage = styled.div`
+  width: 100%;
+  height: 250px;
   background-color: #ccc;
   color: #fff;
-  padding: 10px;
   border-radius: 8px;
   display: flex;
   align-items: center;

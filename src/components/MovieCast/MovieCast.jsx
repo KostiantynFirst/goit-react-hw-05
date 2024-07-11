@@ -2,26 +2,31 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCast } from "../../movie-api";
 import { Container, MovieInfo, ActorCard, ActorImage, ActorInfo, NoImage, Message } from "./MovieCast.styled";
+import Loader from "../Loader/Loader";
 
 const MovieCast = () => {
 
-    const {movieId} = useParams();
-    const [castData, setCastData] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const {movieId} = useParams();
+  const [castData, setCastData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
 
     useEffect(() => {
-        if(!movieId) {
-            return;
+        if(!movieId) return;
+          async function getCastDetails() {
+            try {
+              setLoading(true);
+              setError(false);
+              const res = await getCast(movieId);
+              setCastData(res);
+            } catch (error) {
+              setError(true);
+            } finally {
+              setLoading(false)
+            }
         }
-
-        const getCastDetails = async () => {
-            const res = await getCast(movieId);
-            setCastData(res.data.cast);
-            console.log(res.data.cast);
-            setLoading(false);
-        }
-
+      
         getCastDetails();
 
     }, [movieId]);
@@ -29,8 +34,9 @@ const MovieCast = () => {
 
     return (
         <Container>
-          {loading && <MovieInfo>Loading...</MovieInfo>}
-          {!loading && (
+        {loading && <Loader />}
+        {error && <ErrorMessage />}
+          {castData && (
             <MovieInfo>
               {castData.map(({ id, character, name, profile_path }) => (
                 <ActorCard key={id}>
@@ -56,7 +62,7 @@ const MovieCast = () => {
               ))}
             </MovieInfo>
           )}
-          {loading && castData.length === 0 && (
+          {!loading && castData.length === 0 && (
             <Message>We don't have information for this movie</Message>
           )}
         </Container>

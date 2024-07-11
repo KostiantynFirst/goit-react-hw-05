@@ -3,30 +3,36 @@ import { Outlet, useLocation, useParams } from "react-router-dom";
 import { getMoviesInfo } from "../../movie-api";
 import { MainWrapper, BackLink, InfoBox, InfoLinksList, InfoItemLink } from "./MovieDetailsPage.styled";
 import { MovieDetailsComponent } from "../../components/MovieInfo/MovieInfo";
+import Loader from "../../components/Loader/Loader";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const MovieDetailsPage = () => {
 
     const [movieDetails, setMovieDetails] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false)
     const location = useLocation();
     const backLinkLocation = useRef(location.state?.from);
     const { movieId } = useParams();
    
 
     useEffect(() => {
-        if(!movieId){
-            return;
-        }
-
-        const getMovieDetails = async () => {
-            const res = await getMoviesInfo(movieId);
-            if (res.data.length === 0) {
-                return;
+        if (!movieId) return;
+        async function getMovieDetails() {
+            try {
+                setLoading(true);
+                setError(false);
+                const res = await getMoviesInfo(movieId);
+                if (res.data.length === 0) {
+                    return;
+                }
+                setMovieDetails(res.data);
+            } catch (error) {
+                setError(true);
+            } finally {
+                setLoading(false);
             }
-            setMovieDetails(res.data);
-            setLoading(false);
         }
-        
         getMovieDetails();
 
 
@@ -41,7 +47,10 @@ const MovieDetailsPage = () => {
             Go back
             </BackLink>
 
-            {!loading && <MovieDetailsComponent movieInfoDetails={movieDetails} />}
+            {loading && <Loader /> }
+            {error && <ErrorMessage />}
+            
+            {movieDetails && <MovieDetailsComponent movieInfoDetails={movieDetails} />}
 
             <InfoBox>
                 <p>Additional information</p>
@@ -57,7 +66,7 @@ const MovieDetailsPage = () => {
 
             </InfoBox>
 
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loader />}>
              <Outlet />
          </Suspense>
 

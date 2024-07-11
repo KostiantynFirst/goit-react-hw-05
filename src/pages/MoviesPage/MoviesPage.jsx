@@ -2,13 +2,18 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { getMovieSearch } from "../../movie-api";
 import { SearchContainer, SearchForm, ResultsList, NoResultsMessage } from "./MoviesPage.styled";
+import Loader from "../../components/Loader/Loader";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 const MoviesPage = () => {
 
 const [movieSearch, setMovieSearch] = useState([]);
 const [noResultsFound, setNoResultsFound] = useState(false);
 const location = useLocation();
-const [searchParams, setSearchParams ] = useSearchParams();
+const [searchParams, setSearchParams] = useSearchParams();
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(false);    
+    
 const query = searchParams.get('search'); 
    
 useEffect(() => {
@@ -22,6 +27,7 @@ useEffect(() => {
 const findMovie = async () => {
 
     try {
+        setLoading(true);
         const res = await getMovieSearch(query);
         const movies = res.data.results;
         console.log(movies);
@@ -30,9 +36,12 @@ const findMovie = async () => {
             } else {
                 setMovieSearch(movies);
             }
-    } catch (error) {
-        console.error('Error fetching movies:', error);
-    }
+        } catch (error) {
+            setError(true);
+        } finally {
+        setLoading(false);
+        }
+
         
 }
 
@@ -45,7 +54,8 @@ const onSearchQuery = (e) => {
     e.preventDefault();
     const form = e.currentTarget;
     const searchQuery = form.elements.search.value;
-    setSearchParams({search: searchQuery });
+    setMovieSearch([])
+    setSearchParams({ search: searchQuery });
     form.reset();
 }
 
@@ -59,11 +69,11 @@ return (
                 autoComplete="off"
                 autoFocus
                 placeholder="Search movie"
-                // value={query}
-                // onChange={onSearchQuery} 
             />
             <button type="submit">Search</button>
         </SearchForm> 
+        {loading && <Loader />}
+        {error && <ErrorMessage />}
         {query && !noResultsFound && (
             <ResultsList>
                 {movieSearch.map (({id, name, title}) => (

@@ -24,7 +24,9 @@ export const StyledNavLink = styled(NavLink)`
     color: #fff;
     font-weight: bold;
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &.active {
         text-decoration: underline;
     }
 `;

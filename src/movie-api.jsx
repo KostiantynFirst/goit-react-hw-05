@@ -59,7 +59,7 @@ export const getCast = async (movieId) => {
         language: 'en-US',
       },
     });
-    return res;
+    return res.data.cast;
   } catch (error) {
     console.log('error', error);
   }
